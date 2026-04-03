@@ -89,3 +89,6 @@ updateCount();
 
 </body>
 </html>
+.then(res => res.text())
+.then(count => {
+  console.log("SERVER RESPONSE:", count);
