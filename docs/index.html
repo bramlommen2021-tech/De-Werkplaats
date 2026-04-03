@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Workshop Aanmelding</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      text-align: center;
+    }
+    .box {
+      background: white;
+      padding: 25px;
+      margin: 50px auto;
+      width: 320px;
+      border-radius: 12px;
+    }
+    input, button {
+      width: 90%;
+      padding: 10px;
+      margin: 6px;
+    }
+    button {
+      background: #007BFF;
+      color: white;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Workshop Aanmelding</h2>
+  <p id="status">Laden...</p>
+
+  <form onsubmit="sendData(event)">
+    <input id="naam" placeholder="Naam" required><br>
+    <input id="leeftijd" type="number" placeholder="Leeftijd" required><br>
+    <input id="telefoon" placeholder="Telefoon"><br>
+    <input id="email" type="email" placeholder="Email"><br>
+    <button id="btn">Aanmelden</button>
+  </form>
+
+  <p id="melding"></p>
+</div>
+
+<script>
+const URL = "PASTE_HIER_JE_APPS_SCRIPT_URL";
+const MAX = 10;
+
+function updateCount() {
+  fetch(URL)
+    .then(res => res.text())
+    .then(count => {
+      let left = MAX - Number(count);
+      document.getElementById("status").innerText =
+        left > 0 ? left + " plekken beschikbaar" : "Workshop is VOL";
+      if (left <= 0) document.getElementById("btn").disabled = true;
+    });
+}
+
+function sendData(e) {
+  e.preventDefault();
+
+  const data = {
+    naam: document.getElementById("naam").value,
+    leeftijd: document.getElementById("leeftijd").value,
+    telefoon: document.getElementById("telefoon").value,
+    email: document.getElementById("email").value
+  };
+
+  fetch(URL, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    }
+  })
+  .then(res => res.text())
+  .then(result => {
+    document.getElementById("melding").innerText =
+      result === "VOL" ? "Workshop is vol!" : "Je bent aangemeld!";
+    updateCount();
+  });
+}
+
+updateCount();
+</script>
+
+</body>
+</html>
